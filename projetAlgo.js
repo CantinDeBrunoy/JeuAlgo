@@ -75,15 +75,11 @@ class Carte{
             }
         }
 
-        let k = 0;
         
-
-
-            
-           
-        
-        
-        this.creationsChemin(tab,this.creationCelluleReferente(tab).valeur)
+        //tant qu'il y a des murs a detruire je casse
+        while(this.creationsChemin(tab) == false){
+            this.detruireMur(tab);
+        }
 
         
         this.dessinerMap(tab)
@@ -115,25 +111,25 @@ class Carte{
 
         return tabTmp[Math.floor(Math.random() * (tabTmp.length-1))];
     }
-    //methode permettant de générer un chemin
-    creationsChemin(tab,nbrReferent){
+    //methode de savoir si je dois casser un mur
+    creationsChemin(tab){
         //je verifie si c pareil en parcourant le tableau toutes les impaires si c diffrent je casse et je recommence jsuqu'a true
 
         for(var i = 1; i < this.hauteur-1; i+=2){
-                for(var j = 1;j<this.largeur-1;j+=2){
-                    //on va de case en case 
+                for(var j = 1;j<this.largeur-1;j+=2){       
                     if(tab[i][j]==tab[1][1]){
-                              
+                         //c'est bien on va au suivant
+                         console.log(tab[i][j]+" " +tab[1][1])
                     } 
                     else{
-                        this.detruireMur(tab)
-                        // i =0;
-                        j =0; 
+                        return false;
                     }
                 }
             
         }
+        return true;
     }
+
     //methode pour detruire un mur aléatoirement et remplacer toutes les aciennes valeurs par les nouvelles
     detruireMur(tab){
         var hauteurTmp =  this.creationCelluleReferente(tab).x;
