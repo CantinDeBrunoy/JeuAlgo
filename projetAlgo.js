@@ -3,6 +3,8 @@ function getNombreAleatoire(min,max){
 }
 
 
+
+
 class Cellule {
     valeur;
     x;
@@ -25,7 +27,16 @@ class Carte{
     constructor(hauteur,largeur){
         this.hauteur = hauteur;
         this.largeur = largeur;
+        let nombreMursMinimum = (this.largeur*2)+(this.hauteur*2)+this.largeur*2+this.hauteur/2;
         this.map = this.setMap();
+        console.log(nombreMursMinimum,this.nombreMurs())
+        //TODO REGENERATION DE MAP SI Murs < Min
+
+        // while(this.nombreMurs(this.map)<=nombreMursMinimum){
+        //     console.log("generation carte")
+        //     this.map = this.setMap();
+        // }
+        
     }
     //methode pour générer la map
     setMap(){
@@ -86,6 +97,18 @@ class Carte{
 
         return tab;
     }
+    nombreMurs(){
+        let nombreMurs = 0;
+        for(var i = 0; i < this.hauteur; ++i){
+            for(var j = 0;j<this.largeur;++j){
+                if(this.map[i][j].valeur ==1){
+                        ++nombreMurs;
+                }
+            }
+        }
+    
+        return nombreMurs;
+    }
     //methode permettant de choisir aléatoirement une case du tableau
     creationCelluleReferente(tab){
         var nbrReferent;
@@ -117,7 +140,6 @@ class Carte{
                 for(var j = 1;j<this.largeur-1;j+=2){       
                     if(tab[i][j]==tab[1][1]){
                          //c'est bien on va au suivant
-                         console.log(tab[i][j].valeur+" " +tab[1][1].valeur)
                     } 
                     else{
                         return false;
@@ -143,11 +165,9 @@ class Carte{
                 hauteurTmp = getNombreAleatoire(1,this.hauteur-2);
             }
         }
-        console.log(tab[hauteurTmp][largeurTmp])
 
         //a gauche
         if(tab[hauteurTmp][largeurTmp-1].valeur!=1){
-            console.log("hauteur")
 
             var CelluleTmp = new Cellule(tab[hauteurTmp][largeurTmp-1].valeur,hauteurTmp,largeurTmp); //16
             tab[hauteurTmp][largeurTmp] = CelluleTmp
@@ -157,7 +177,6 @@ class Carte{
             for(var i = 0; i < this.hauteur; ++i){
                 for(var j = 0;j<this.largeur;++j){
                     if(tab[i][j].valeur==tab[hauteurTmp][largeurTmp+1].valeur){ 
-                        console.log("toto")
                         tab[i][j]=tab[hauteurTmp][largeurTmp-1];
                     }
                 }
@@ -166,7 +185,6 @@ class Carte{
         }
         //au dessus
         else if(tab[hauteurTmp-1][largeurTmp].valeur!=1){
-            console.log("cote")
 
             var CelluleTmp = new Cellule(tab[hauteurTmp-1][largeurTmp].valeur,hauteurTmp,largeurTmp); //16
             tab[hauteurTmp][largeurTmp] = CelluleTmp
@@ -176,7 +194,6 @@ class Carte{
             for(var i = 0; i < this.hauteur; ++i){
                 for(var j = 0;j<this.largeur;++j){
                     if(tab[i][j].valeur==tab[hauteurTmp+1][largeurTmp].valeur){ 
-                        console.log("toto")
                         tab[i][j]=tab[hauteurTmp-1][largeurTmp];
                     }
                 }
@@ -184,109 +201,6 @@ class Carte{
         }
         
 
-    }
-    detruireMur_old(tab){
-        var largeurTmp = getNombreAleatoire(1,this.largeur-1)
-        if(largeurTmp%2==0){
-            var hauteurTmp = getNombreAleatoire(1,this.hauteur-1);
-            while(hauteurTmp%2==0){
-                hauteurTmp = getNombreAleatoire(1,this.hauteur-1);
-            }
-        }
-        else{
-            var hauteurTmp = getNombreAleatoire(1,this.hauteur-1);
-            while(hauteurTmp%2!=0){
-                hauteurTmp = getNombreAleatoire(1,this.hauteur-1);
-            }
-        }
-        console.log(hauteurTmp+" "+largeurTmp)
-        // var hauteurTmp =  this.creationCelluleReferente(tab).x;
-        // var largeurTmp =  this.creationCelluleReferente(tab).y;
-
-
-        console.log(tab[hauteurTmp][largeurTmp].valeur)
-        if(tab[hauteurTmp][largeurTmp].valeur !=1){
-            console.log("toto")
-            var direction = Math.floor(Math.random() * 3);
-                switch (direction) {
-                //casser au dessus
-                case 0:
-                    console.log("haut")
-                    if(hauteurTmp-1!=0){
-                        //toutes les valeurs de tab doivent etre remplacer par les nouvelles valeurs
-                        //remplace la premiere valeur
-                        var valeurTmp = tab[hauteurTmp-2][largeurTmp].valeur;
-                        tab[hauteurTmp-1][largeurTmp] = new Cellule(tab[hauteurTmp][largeurTmp].valeur,hauteurTmp-1,largeurTmp)
-
-                        //parcours le tableau pour remplacer toutes les anciennes valeurs par les nouvelles
-                        for(var i = 0; i < this.hauteur; i++){
-                            for(var j = 0;j<this.largeur;++j){
-                                if(tab[i][j].valeur==valeurTmp){
-                                    tab[i][j]=tab[hauteurTmp][largeurTmp];
-                                }
-                            }
-                        }
-                        
-                    }
-                    return tab;
-
-                //casser a droite
-                case 1:
-                    console.log("droite")
-                    // if(largeurTmp+2!=this.largeur){
-                    //     var valeurTmp = tab[hauteurTmp][largeurTmp+2].valeur;
-                    //     tab[hauteurTmp][largeurTmp+1] = new Cellule(tab[hauteurTmp][largeurTmp].valeur,hauteurTmp,largeurTmp+1)
-                        
-                    //     //parcours le tableau pour remplacer toutes les anciennes valeurs par les nouvelles
-                    //     for(var i = 0; i < this.hauteur; i++){
-                    //         for(var j = 0;j<this.largeur;++j){
-                    //             if(tab[i][j].valeur==valeurTmp){
-                    //                 tab[i][j]=tab[hauteurTmp][largeurTmp];
-                    //             }
-                    //         }
-                    //     }
-                    // }
-                    return tab;
-
-                //casser en dessous
-                case 2:
-                    console.log("dessous")
-                    // if(hauteurTmp+2!=this.hauteur){
-
-                    //     var valeurTmp = tab[hauteurTmp+2][largeurTmp].valeur;
-                    //     tab[hauteurTmp+1][largeurTmp] = new Cellule(tab[hauteurTmp][largeurTmp].valeur,hauteurTmp+1,largeurTmp);
-
-                    //     //parcours le tableau pour remplacer toutes les anciennes valeurs par les nouvelles
-                    //     for(var i = 0; i < this.hauteur; i++){
-                    //         for(var j = 0;j<this.largeur;++j){
-                    //             if(tab[i][j].valeur==valeurTmp){
-                    //                 tab[i][j]=tab[hauteurTmp][largeurTmp];
-                    //             }
-                    //         }
-                    //     }                        
-                    // }
-                    return tab;
-
-                //casser a gauche
-                case 3:
-                    console.log("bas")
-                    // if(largeurTmp!=0){
-
-                    //     var valeurTmp = tab[hauteurTmp][largeurTmp-2].valeur;
-                    //     tab[hauteurTmp][largeurTmp-1] = new Cellule(tab[hauteurTmp][largeurTmp-1].valeur,hauteurTmp,largeurTmp);
-
-                    //     //parcours le tableau pour remplacer toutes les anciennes valeurs par les nouvelles
-                    //     for(var i = 0; i < this.hauteur; i++){
-                    //         for(var j = 0;j<this.largeur;++j){
-                    //             if(tab[i][j].valeur==valeurTmp){
-                    //                 tab[i][j]=tab[hauteurTmp][largeurTmp];
-                    //             }
-                    //         }
-                    //     }                         
-                    // }
-                    return tab;
-            }
-        }
     }
     //methode qui retourne la map
     getMap(){
@@ -313,15 +227,9 @@ class Carte{
 }
 
 const carte = new Carte(13,11)
-console.log(carte)
 
-// for(var i =0;i<carte.hauteur;++i){
-//     carte.map[i].map((cellule) => {
-//         console.log(cellule.valeur)
-//     })
-// }
 
-// console.log(cellule)
+
 
 
 
