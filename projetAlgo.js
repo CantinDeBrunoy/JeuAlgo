@@ -1,3 +1,8 @@
+function getNombreAleatoire(min,max){
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+
 class Cellule {
     valeur;
     x;
@@ -36,7 +41,6 @@ class Carte{
             if(i%2===0){
                 for(var j = 0;j<this.largeur;++j){
                     tab[i][j] = new Cellule(1,i,j);
-                    //tab[i][j] =1;
                 }
             }
             else{
@@ -45,7 +49,6 @@ class Carte{
                     console.log(tab[i])
                     for(var j = 0;j<this.largeur;++j){
                         tab[i][j] = tab[i][j] = new Cellule(1,i,j);
-                        //tab[i][j] =1;
                     }
                 }
                 else{
@@ -54,12 +57,10 @@ class Carte{
                         //init la premiere ligne et la derniere à 1;
                         if(j===0 || j===this.largeur-1){
                             tab[i][j] = tab[i][j] = new Cellule(1,i,j);
-                            //tab[i][j] =1;
                         }
                         //regarde si c'est pair
                         else if(j%2===0){
                             tab[i][j] = new Cellule(1,i,j);
-                            //tab[i][j] =1;
                         }
                         else{
                            if(nbr ===1){
@@ -67,9 +68,7 @@ class Carte{
                            }
                            tab[i][j] = tab[i][j] = new Cellule(nbr,i,j);;;
                             ++nbr;
-                            //tab[i][j] =valeur;
                         }
-                        //regarde si c'est impair
                     }
                 }
             }
@@ -79,9 +78,8 @@ class Carte{
         //tant qu'il y a des murs a detruire je casse
         while(this.creationsChemin(tab) == false){
             this.detruireMur(tab);
-        }
-
-        
+        }        
+        //getNombreImpair()
         this.dessinerMap(tab)
 
         
@@ -119,7 +117,7 @@ class Carte{
                 for(var j = 1;j<this.largeur-1;j+=2){       
                     if(tab[i][j]==tab[1][1]){
                          //c'est bien on va au suivant
-                         console.log(tab[i][j]+" " +tab[1][1])
+                         console.log(tab[i][j].valeur+" " +tab[1][1].valeur)
                     } 
                     else{
                         return false;
@@ -132,16 +130,88 @@ class Carte{
 
     //methode pour detruire un mur aléatoirement et remplacer toutes les aciennes valeurs par les nouvelles
     detruireMur(tab){
-        var hauteurTmp =  this.creationCelluleReferente(tab).x;
-        var largeurTmp =  this.creationCelluleReferente(tab).y;
+        var largeurTmp = getNombreAleatoire(1,this.largeur-2)
+        if(largeurTmp%2==0){
+            var hauteurTmp = getNombreAleatoire(1,this.hauteur-2);
+            while(hauteurTmp%2==0){
+                hauteurTmp = getNombreAleatoire(1,this.hauteur-2);
+            }
+        }
+        else{
+            var hauteurTmp = getNombreAleatoire(1,this.hauteur-2);
+            while(hauteurTmp%2!=0){
+                hauteurTmp = getNombreAleatoire(1,this.hauteur-2);
+            }
+        }
+        console.log(tab[hauteurTmp][largeurTmp])
 
+        //a gauche
+        if(tab[hauteurTmp][largeurTmp-1].valeur!=1){
+            console.log("hauteur")
 
+            var CelluleTmp = new Cellule(tab[hauteurTmp][largeurTmp-1].valeur,hauteurTmp,largeurTmp); //16
+            tab[hauteurTmp][largeurTmp] = CelluleTmp
+
+            
+            //parcours le tableau pour remplacer toutes les anciennes valeurs par les nouvelles
+            for(var i = 0; i < this.hauteur; ++i){
+                for(var j = 0;j<this.largeur;++j){
+                    if(tab[i][j].valeur==tab[hauteurTmp][largeurTmp+1].valeur){ 
+                        console.log("toto")
+                        tab[i][j]=tab[hauteurTmp][largeurTmp-1];
+                    }
+                }
+            }
+
+        }
+        //au dessus
+        else if(tab[hauteurTmp-1][largeurTmp].valeur!=1){
+            console.log("cote")
+
+            var CelluleTmp = new Cellule(tab[hauteurTmp-1][largeurTmp].valeur,hauteurTmp,largeurTmp); //16
+            tab[hauteurTmp][largeurTmp] = CelluleTmp
+
+            
+            //parcours le tableau pour remplacer toutes les anciennes valeurs par les nouvelles
+            for(var i = 0; i < this.hauteur; ++i){
+                for(var j = 0;j<this.largeur;++j){
+                    if(tab[i][j].valeur==tab[hauteurTmp+1][largeurTmp].valeur){ 
+                        console.log("toto")
+                        tab[i][j]=tab[hauteurTmp-1][largeurTmp];
+                    }
+                }
+            }
+        }
         
+
+    }
+    detruireMur_old(tab){
+        var largeurTmp = getNombreAleatoire(1,this.largeur-1)
+        if(largeurTmp%2==0){
+            var hauteurTmp = getNombreAleatoire(1,this.hauteur-1);
+            while(hauteurTmp%2==0){
+                hauteurTmp = getNombreAleatoire(1,this.hauteur-1);
+            }
+        }
+        else{
+            var hauteurTmp = getNombreAleatoire(1,this.hauteur-1);
+            while(hauteurTmp%2!=0){
+                hauteurTmp = getNombreAleatoire(1,this.hauteur-1);
+            }
+        }
+        console.log(hauteurTmp+" "+largeurTmp)
+        // var hauteurTmp =  this.creationCelluleReferente(tab).x;
+        // var largeurTmp =  this.creationCelluleReferente(tab).y;
+
+
+        console.log(tab[hauteurTmp][largeurTmp].valeur)
         if(tab[hauteurTmp][largeurTmp].valeur !=1){
+            console.log("toto")
             var direction = Math.floor(Math.random() * 3);
-            switch (direction) {
+                switch (direction) {
                 //casser au dessus
                 case 0:
+                    console.log("haut")
                     if(hauteurTmp-1!=0){
                         //toutes les valeurs de tab doivent etre remplacer par les nouvelles valeurs
                         //remplace la premiere valeur
@@ -162,55 +232,58 @@ class Carte{
 
                 //casser a droite
                 case 1:
-                    if(largeurTmp+2!=this.largeur){
-                        var valeurTmp = tab[hauteurTmp][largeurTmp+2].valeur;
-                        tab[hauteurTmp][largeurTmp+1] = new Cellule(tab[hauteurTmp][largeurTmp].valeur,hauteurTmp,largeurTmp+1)
+                    console.log("droite")
+                    // if(largeurTmp+2!=this.largeur){
+                    //     var valeurTmp = tab[hauteurTmp][largeurTmp+2].valeur;
+                    //     tab[hauteurTmp][largeurTmp+1] = new Cellule(tab[hauteurTmp][largeurTmp].valeur,hauteurTmp,largeurTmp+1)
                         
-                        //parcours le tableau pour remplacer toutes les anciennes valeurs par les nouvelles
-                        for(var i = 0; i < this.hauteur; i++){
-                            for(var j = 0;j<this.largeur;++j){
-                                if(tab[i][j].valeur==valeurTmp){
-                                    tab[i][j]=tab[hauteurTmp][largeurTmp];
-                                }
-                            }
-                        }
-                    }
+                    //     //parcours le tableau pour remplacer toutes les anciennes valeurs par les nouvelles
+                    //     for(var i = 0; i < this.hauteur; i++){
+                    //         for(var j = 0;j<this.largeur;++j){
+                    //             if(tab[i][j].valeur==valeurTmp){
+                    //                 tab[i][j]=tab[hauteurTmp][largeurTmp];
+                    //             }
+                    //         }
+                    //     }
+                    // }
                     return tab;
 
                 //casser en dessous
                 case 2:
-                    if(hauteurTmp+2!=this.hauteur){
+                    console.log("dessous")
+                    // if(hauteurTmp+2!=this.hauteur){
 
-                        var valeurTmp = tab[hauteurTmp+2][largeurTmp].valeur;
-                        tab[hauteurTmp+1][largeurTmp] = new Cellule(tab[hauteurTmp][largeurTmp].valeur,hauteurTmp+1,largeurTmp);
+                    //     var valeurTmp = tab[hauteurTmp+2][largeurTmp].valeur;
+                    //     tab[hauteurTmp+1][largeurTmp] = new Cellule(tab[hauteurTmp][largeurTmp].valeur,hauteurTmp+1,largeurTmp);
 
-                        //parcours le tableau pour remplacer toutes les anciennes valeurs par les nouvelles
-                        for(var i = 0; i < this.hauteur; i++){
-                            for(var j = 0;j<this.largeur;++j){
-                                if(tab[i][j].valeur==valeurTmp){
-                                    tab[i][j]=tab[hauteurTmp][largeurTmp];
-                                }
-                            }
-                        }                        
-                    }
+                    //     //parcours le tableau pour remplacer toutes les anciennes valeurs par les nouvelles
+                    //     for(var i = 0; i < this.hauteur; i++){
+                    //         for(var j = 0;j<this.largeur;++j){
+                    //             if(tab[i][j].valeur==valeurTmp){
+                    //                 tab[i][j]=tab[hauteurTmp][largeurTmp];
+                    //             }
+                    //         }
+                    //     }                        
+                    // }
                     return tab;
 
                 //casser a gauche
                 case 3:
-                    if(largeurTmp!=0){
+                    console.log("bas")
+                    // if(largeurTmp!=0){
 
-                        var valeurTmp = tab[hauteurTmp][largeurTmp-2].valeur;
-                        tab[hauteurTmp][largeurTmp-1] = new Cellule(tab[hauteurTmp][largeurTmp-1].valeur,hauteurTmp,largeurTmp);
+                    //     var valeurTmp = tab[hauteurTmp][largeurTmp-2].valeur;
+                    //     tab[hauteurTmp][largeurTmp-1] = new Cellule(tab[hauteurTmp][largeurTmp-1].valeur,hauteurTmp,largeurTmp);
 
-                        //parcours le tableau pour remplacer toutes les anciennes valeurs par les nouvelles
-                        for(var i = 0; i < this.hauteur; i++){
-                            for(var j = 0;j<this.largeur;++j){
-                                if(tab[i][j].valeur==valeurTmp){
-                                    tab[i][j]=tab[hauteurTmp][largeurTmp];
-                                }
-                            }
-                        }                         
-                    }
+                    //     //parcours le tableau pour remplacer toutes les anciennes valeurs par les nouvelles
+                    //     for(var i = 0; i < this.hauteur; i++){
+                    //         for(var j = 0;j<this.largeur;++j){
+                    //             if(tab[i][j].valeur==valeurTmp){
+                    //                 tab[i][j]=tab[hauteurTmp][largeurTmp];
+                    //             }
+                    //         }
+                    //     }                         
+                    // }
                     return tab;
             }
         }
@@ -239,8 +312,7 @@ class Carte{
     }
 }
 
-const carte = new Carte(21,23)
-const cellule = new Cellule(1,15,8)
+const carte = new Carte(13,11)
 console.log(carte)
 
 // for(var i =0;i<carte.hauteur;++i){
